@@ -124,7 +124,7 @@ export default function ProfilePage() {
   };
 
   const handleDownload = (id) => {
-    const base = api.defaults.baseURL || "http://127.0.0.1:8001";
+    const base = api.defaults.baseURL || "";
     window.open(`${base}/resumes/${id}/download`, "_blank");
   };
 
