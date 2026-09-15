@@ -615,6 +615,8 @@ export default function CareerAssistantPage() {
     setInputMessage("");
     setSpeechTranscript("");
     setLoading(true);
+    setAttachedDoc(null);
+    setDocQAData(null);
 
     try {
       const res = await api.post("/api/assistant/chat", {
@@ -1684,14 +1686,23 @@ export default function CareerAssistantPage() {
                 <div>
                   <strong>{attachedDoc.filename}</strong>
                   <div className="att-file-meta-row">
-                    <small>{(attachedDoc.file_size / 1024).toFixed(1)} KB • Extracted Context Ready</small>
+                    <small>{(attachedDoc.file_size / 1024).toFixed(1)} KB • Context Ready</small>
+                    <button
+                      type="button"
+                      className="btn-send-attached-doc-pill"
+                      onClick={() => handleSendMessage(`Please analyze my uploaded document "${attachedDoc.filename}". Summarize the key qualifications, extracted technical skills, and how they match my target roles.`)}
+                      disabled={loading}
+                      title="Send this file into the AI chat for full analysis"
+                    >
+                      {loading ? "⏳ Analyzing..." : "🚀 Send File to AI Chat"}
+                    </button>
                     <button
                       type="button"
                       className="btn-gen-doc-qa-pill"
                       onClick={handleGenerateDocQA}
                       disabled={loadingDocQA}
                     >
-                      {loadingDocQA ? "Generating Q&A..." : "✨ Generate Document Q&A"}
+                      {loadingDocQA ? "Generating Q&A..." : "✨ Generate Q&A Pack"}
                     </button>
                   </div>
                 </div>
@@ -1826,6 +1837,8 @@ export default function CareerAssistantPage() {
                 placeholder={
                   isListening
                     ? "Listening to speech... Speak now..."
+                    : attachedDoc
+                    ? `📎 File Attached: "${attachedDoc.filename}" — Click 'Send File' or type custom questions...`
                     : "Ask about suitable roles, interview questions, roadmap, or upload a document for Q&A..."
                 }
                 disabled={loading}
@@ -1837,12 +1850,13 @@ export default function CareerAssistantPage() {
               className="btn-chat-send"
               onClick={() => handleSendMessage()}
               disabled={loading || (!inputMessage.trim() && !attachedDoc)}
+              title={attachedDoc && !inputMessage.trim() ? "Send attached file to AI" : "Send message"}
             >
               {loading ? (
                 <span className="send-spinner">...</span>
               ) : (
                 <>
-                  <span>Send</span>
+                  <span>{attachedDoc && !inputMessage.trim() ? "Send File" : "Send"}</span>
                   <span className="send-arrow">→</span>
                 </>
               )}
