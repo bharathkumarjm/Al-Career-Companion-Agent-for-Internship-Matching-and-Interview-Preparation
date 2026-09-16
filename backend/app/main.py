@@ -79,11 +79,12 @@ app.add_middleware(
     allow_origins=[
         "*",
         "https://eclair-modulator-express.ngrok-free.dev",
-        "https://talentsprint-ai.netlify.app",
-        "https://talentscript-ai.netlify.app",
-        "https://al-career-companion-agent-for-internship-matchin-production.up.railway.app"
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:8001",
+        "http://127.0.0.1:8001"
     ],
-    allow_origin_regex=r"https://.*\.ngrok-free\.dev|https://.*\.ngrok\.app|https://.*\.ngrok\.io|https://.*\.netlify\.app|https://.*\.railway\.app|http://localhost:\d+|http://127\.0\.0\.1:\d+",
+    allow_origin_regex=r"https://.*\.ngrok-free\.dev|https://.*\.ngrok\.app|https://.*\.ngrok\.io|http://localhost:\d+|http://127\.0\.0\.1:\d+",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
