@@ -12760,3 +12760,29 @@
   color: #4f46e5;
   background: #ffffff;
 }
+
+/* =========================================================
+   HIDE NETLIFY PRE-LAUNCH TOOLS & COLLABORATIVE TOOLBAR
+========================================================= */
+netlify-drawer,
+netlify-toolbar,
+#netlify-drawer,
+#netlify-toolbar,
+.netlify-drawer,
+.netlify-toolbar,
+[data-netlify-drawer],
+iframe[src*="netlify"],
+iframe[title*="Netlify"],
+div[id*="netlify"],
+div[class*="netlify"],
+div[data-testid*="netlify"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  z-index: -999999 !important;
+}
+

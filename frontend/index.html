@@ -5,6 +5,78 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Career Companion Agent for Internship Matching and Interview Preparation</title>
+    <style>
+      /* Hide Netlify Pre-launch / Collaborative Toolbar */
+      netlify-drawer,
+      netlify-toolbar,
+      #netlify-drawer,
+      #netlify-toolbar,
+      .netlify-drawer,
+      .netlify-toolbar,
+      [data-netlify-drawer],
+      iframe[src*="netlify"],
+      iframe[title*="Netlify"],
+      div[id*="netlify"],
+      div[class*="netlify"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        z-index: -999999 !important;
+      }
+    </style>
+    <script>
+      (function() {
+        const removeNetlifyElements = () => {
+          const selectors = [
+            'netlify-drawer',
+            'netlify-toolbar',
+            '#netlify-drawer',
+            '#netlify-toolbar',
+            '.netlify-drawer',
+            '.netlify-toolbar',
+            '[data-netlify-drawer]',
+            'iframe[src*="netlify"]',
+            'iframe[title*="Netlify"]'
+          ];
+          selectors.forEach(sel => {
+            document.querySelectorAll(sel).forEach(el => {
+              try { el.remove(); } catch(e) { el.style.display = 'none'; }
+            });
+          });
+
+          // Check direct children of body for injected Netlify pre-launch toolbar
+          const bodyChildren = document.body ? document.body.children : [];
+          for (let i = 0; i < bodyChildren.length; i++) {
+            const el = bodyChildren[i];
+            if (el.id === 'root' || el.tagName === 'SCRIPT' || el.tagName === 'STYLE') continue;
+            const text = (el.innerText || el.textContent || '');
+            if (text.includes('Pre-launch tools') || text.includes('Make public') || text.includes('Private')) {
+              try { el.remove(); } catch(e) { el.style.display = 'none'; }
+            }
+            if (el.shadowRoot) {
+              selectors.forEach(sel => {
+                el.shadowRoot.querySelectorAll(sel).forEach(sc => {
+                  try { sc.remove(); } catch(e) { sc.style.display = 'none'; }
+                });
+              });
+            }
+          }
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', removeNetlifyElements);
+        } else {
+          removeNetlifyElements();
+        }
+        window.addEventListener('load', removeNetlifyElements);
+        const observer = new MutationObserver(removeNetlifyElements);
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
