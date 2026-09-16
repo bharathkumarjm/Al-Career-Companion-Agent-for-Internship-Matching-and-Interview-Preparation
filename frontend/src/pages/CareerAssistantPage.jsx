@@ -1298,7 +1298,7 @@ export default function CareerAssistantPage() {
           VIEW 4: CHAT & DOCUMENT Q&A (DEFAULT CORE VIEW)
           ============================================================ */}
       {activeView === "chat" && (
-        <div className="chat-layout-wrapper panel-box">
+        <>
           {/* Active Resume Grounding Banner */}
           <div className="resume-grounding-banner">
             <div className="grounding-left">
@@ -1386,8 +1386,10 @@ export default function CareerAssistantPage() {
             </div>
           </div>
 
-          {/* Chat Header Bar */}
-          <div className="chat-header-bar">
+          {/* Dedicated Chat & Assistant Card */}
+          <div className="chat-layout-wrapper">
+            {/* Chat Header Bar */}
+            <div className="chat-header-bar">
             <div className="chat-mentor-info">
               <div className="mentor-avatar-badge">🤖</div>
               <div>
@@ -1863,6 +1865,7 @@ export default function CareerAssistantPage() {
             </button>
           </div>
         </div>
+        </>
       )}
     </Layout>
   );

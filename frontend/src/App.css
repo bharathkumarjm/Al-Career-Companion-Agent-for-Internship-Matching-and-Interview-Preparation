@@ -4651,9 +4651,8 @@
 .chat-layout-wrapper {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 160px);
   padding: 0;
-  overflow: hidden;
+  position: relative;
 }
 
 .chat-header-bar {
@@ -11733,18 +11732,22 @@
   overflow: hidden;
   position: relative;
   margin-bottom: 24px;
+  padding: 0 !important;
+  height: auto;
 }
 
 .chat-messages-container {
   padding: 20px 22px;
+  height: 480px;
+  max-height: 540px;
   min-height: 320px;
-  max-height: 520px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
   background: #f8fafc;
   scroll-behavior: smooth;
+  flex: 1 1 auto;
 }
 
 .chat-messages-container::-webkit-scrollbar {
@@ -12107,6 +12110,7 @@
   border-top: 1.5px solid #e2e8f0;
   position: sticky;
   bottom: 0;
+  flex-shrink: 0;
   z-index: 20;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
 }
