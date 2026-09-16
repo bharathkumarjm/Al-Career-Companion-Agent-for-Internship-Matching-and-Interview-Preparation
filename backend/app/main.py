@@ -78,6 +78,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "*",
+        "https://talentsprint-ai.netlify.app",
         "https://talentscript-ai.netlify.app",
         "https://al-career-companion-agent-for-internship-matchin-production.up.railway.app"
     ],
