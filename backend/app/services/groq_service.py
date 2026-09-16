@@ -11,31 +11,36 @@ try:
 except Exception as e:
     print(f"Warning: Could not initialize Groq client: {e}")
 
-MODEL_NAME = "openai/gpt-oss-20b"
+PRIMARY_MODEL = "qwen/qwen3.8-27b"
+FALLBACK_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
+MODEL_NAME = PRIMARY_MODEL
 
 
 def _call_groq(messages: List[Dict[str, str]], json_mode: bool = True, temperature: float = 0.2, max_tokens: int = 2048, model: Optional[str] = None) -> Optional[str]:
-    """Helper to call Groq chat completion safely."""
+    """Helper to call Groq chat completion safely with automatic fallback."""
     if not client:
         return None
-    selected_model = model or MODEL_NAME
-    try:
-        kwargs = {
-            "model": selected_model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_completion_tokens": max_tokens,
-        }
-        if json_mode:
-            kwargs["response_format"] = {"type": "json_object"}
-        response = client.chat.completions.create(**kwargs)
-        return response.choices[0].message.content
-    except Exception as err:
+    models_to_try = [model] if model else [PRIMARY_MODEL] + [m for m in FALLBACK_MODELS if m != PRIMARY_MODEL]
+    for current_model in models_to_try:
         try:
-            print(f"Groq API call error ({selected_model}): {str(err).encode('ascii', 'replace').decode('ascii')}")
-        except Exception:
-            pass
-        return None
+            kwargs = {
+                "model": current_model,
+                "messages": messages,
+                "temperature": temperature,
+                "max_completion_tokens": max_tokens,
+            }
+            if json_mode:
+                kwargs["response_format"] = {"type": "json_object"}
+            response = client.chat.completions.create(**kwargs)
+            content = response.choices[0].message.content
+            if content and content.strip():
+                return content
+        except Exception as err:
+            try:
+                print(f"Groq API call error ({current_model}): {str(err).encode('ascii', 'replace').decode('ascii')}")
+            except Exception:
+                pass
+    return None
 
 
 # ============================================================
@@ -755,7 +760,7 @@ CRITICAL RULES FOR MINIMAL & DIRECT RESPONSES:
 5. FORMATTING:
    - Use clean Markdown with bold bullet points. NEVER use ASCII or pipe tables (| Column |).
 """
-        max_tokens = 500
+        max_tokens = 1024
         temperature = 0.2
     else:
         system_prompt = f"""You are the AI Career Companion Agent on the TalentSprint AI platform.
@@ -770,17 +775,14 @@ GUIDELINES:
 4. Ground your answers strictly in the candidate's extracted resume and projects.
 5. Format in clean Markdown with bold bullet points. NEVER use ASCII or pipe tables.
 """
-        max_tokens = 900
+        max_tokens = 2048
         temperature = 0.3
 
     groq_msgs = [{"role": "system", "content": system_prompt}]
     for m in messages[-8:]:
         groq_msgs.append({"role": m.get("role", "user"), "content": m.get("content", "")})
 
-    # Try grounded compound model first
-    content = _call_groq(groq_msgs, json_mode=False, temperature=temperature, max_tokens=max_tokens, model="groq/compound")
-    if not content:
-        content = _call_groq(groq_msgs, json_mode=False, temperature=temperature, max_tokens=max_tokens, model="openai/gpt-oss-120b")
+    content = _call_groq(groq_msgs, json_mode=False, temperature=temperature, max_tokens=max_tokens, model=PRIMARY_MODEL)
     if not content:
         content = _call_groq(groq_msgs, json_mode=False, temperature=temperature, max_tokens=max_tokens)
 
