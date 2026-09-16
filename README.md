@@ -14,8 +14,9 @@ An end-to-end full-stack AI career platform designed to empower students and job
 
 ## 🌐 Live Deployments
 
-- **Frontend Application**: [https://talentsprint-ai.netlify.app/](https://talentsprint-ai.netlify.app/)
-- **Backend API**: [https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/](https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/)
+- **Live Application (ngrok Tunnel)**: [https://eclair-modulator-express.ngrok-free.dev](https://eclair-modulator-express.ngrok-free.dev)
+- **Frontend Application (Netlify)**: [https://talentsprint-ai.netlify.app/](https://talentsprint-ai.netlify.app/)
+- **Backend API (Railway)**: [https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/](https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/)
 - **API Documentation (Swagger)**: [https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/docs](https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/docs)
 - **Health Check**: [https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/health](https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/health)
 
