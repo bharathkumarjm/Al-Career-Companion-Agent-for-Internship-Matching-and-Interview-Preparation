@@ -46,7 +46,6 @@ yarn-error.log*
 # User uploads & ephemeral files
 uploads/
 backend/uploads/
-.tools/
 
 # OS specific files
 .DS_Store

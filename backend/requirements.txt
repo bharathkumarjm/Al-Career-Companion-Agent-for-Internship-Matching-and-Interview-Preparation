@@ -11,4 +11,10 @@ PyMuPDF
 python-docx
 python-jose[cryptography]
 passlib[bcrypt]
+bcrypt
 pgvector
+reportlab
+pypdf
+scikit-learn
+numpy
+email-validator

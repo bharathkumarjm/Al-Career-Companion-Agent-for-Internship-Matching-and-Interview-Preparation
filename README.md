@@ -39,18 +39,20 @@ The project follows a clean monorepo architecture separating the backend REST AP
 │   └── .env.example          # Backend environment variables template
 │
 ├── 📂 frontend/              # React 18 + Vite Web Application
-│   ├── 📂 public/            # Static assets
+│   ├── 📂 public/            # Static assets & _redirects (SPA routing)
 │   ├── 📂 src/
 │   │   ├── 📂 components/    # Reusable UI widgets (Sidebar, Layout, Copilot)
 │   │   ├── 📂 pages/         # Application pages (Auth, Dashboard, Copilot, Customizer)
 │   │   ├── 📂 services/      # Axios HTTP client with JWT interceptor
 │   │   ├── App.jsx           # Main routing & state
 │   │   └── App.css           # Styling & print stylesheets
+│   ├── netlify.toml          # Netlify build configuration
 │   ├── package.json          # Node dependencies & build scripts
 │   └── vite.config.js        # Vite dev server & backend reverse-proxy
 │
 ├── 📄 .gitignore             # Unified Git ignore rules
 ├── 📄 LICENSE                # Open-source MIT License
+├── 📄 netlify.toml           # Root Netlify configuration
 ├── 📄 railway.json           # Root Railway monorepo deployment config
 └── 📄 README.md              # Project documentation & setup instructions
 ```
@@ -100,15 +102,20 @@ This repository includes native Railway configuration files (`railway.json`, `Pr
 5. Under **Settings** $\rightarrow$ **Networking**: Click **Generate Domain**.  
    Railway will provide your public backend URL (e.g., `https://web-production-xxxx.up.railway.app`).
 
-### Step 2: Deploy the Frontend Service
-1. In the same Railway project, click **+ New** $\rightarrow$ **GitHub Repo** (select this repository again).
-2. In the new service settings:
-   - **Root Directory**: Set to `/frontend`
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npx serve -s dist -l $PORT` (or deploy to Vercel/Netlify with Root Directory set to `frontend`).
-3. Under **Variables**:
-   - `VITE_API_BASE_URL`: `https://web-production-xxxx.up.railway.app` *(paste your Railway backend URL from Step 1)*
-4. Under **Networking**: Click **Generate Domain**.
+### Step 2: Deploy the Frontend to Netlify
+This repository includes `netlify.toml` and `_redirects` pre-configured for automatic Single Page App (SPA) routing:
+
+1. Log in to [Netlify](https://app.netlify.com) and click **Add new site** $\rightarrow$ **Import an existing project**.
+2. Connect your GitHub account and select this repository:  
+   `bharathkumarjm/Al-Career-Companion-Agent-for-Internship-Matching-and-Interview-Preparation`
+3. Netlify will auto-detect the configuration from `netlify.toml`:
+   - **Base directory**: `frontend`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `dist` (or `frontend/dist`)
+4. Click **Add environment variables** and set:
+   - **Key**: `VITE_API_BASE_URL`
+   - **Value**: `https://web-production-xxxx.up.railway.app` *(your Railway backend URL from Step 1, without a trailing slash)*
+5. Click **Deploy Site**. Netlify will build and provide your production URL (e.g., `https://your-site.netlify.app`).
 
 ---
 
