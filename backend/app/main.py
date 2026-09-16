@@ -129,3 +129,8 @@ def root():
             "9. Conversational Career Assistant for ongoing guidance"
         ]
     }
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "service": "AI Internship Agent Backend"}

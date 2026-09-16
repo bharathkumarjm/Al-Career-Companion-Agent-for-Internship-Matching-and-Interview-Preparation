@@ -1,13 +1,59 @@
-﻿# 🚀 AI Career Companion Agent
+# 🚀 AI Career Companion Agent
 ### Intelligent Internship Matching, ATS Resume Scoring & Interview Preparation Platform
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18.x-61DAFB.svg?logo=react&logoColor=black)](https://reactjs.org)
 [![Vite](https://img.shields.io/badge/Vite-5.x-646CFF.svg?logo=vite&logoColor=white)](https://vitejs.dev)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg?logo=python&logoColor=white)](https://www.python.org)
+[![Deployed on Railway](https://img.shields.io/badge/Deploy-Railway-0B0D0E.svg?logo=railway&logoColor=white)](https://railway.app)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 An end-to-end full-stack AI career platform designed to empower students and job seekers through automated resume parsing, intelligent RAG-driven Q&A, hands-free voice dictation, ATS compatibility scoring, and 1-click executive CV generation.
+
+---
+
+## 📁 Repository Structure
+
+The project follows a clean monorepo architecture separating the backend REST API services from the frontend user interface:
+
+```
+.
+├── 📂 backend/               # FastAPI Python Backend Service
+│   ├── 📂 app/               # Application logic (routers, models, schemas, services)
+│   │   ├── 📂 models/        # SQLAlchemy database models
+│   │   ├── 📂 routers/       # REST API endpoints (Auth, Career Copilot, CV, etc.)
+│   │   ├── 📂 schemas/       # Pydantic request & response validation
+│   │   ├── 📂 services/      # Groq LLaMA-3, ReportLab PDF, NLP & RAG matching
+│   │   ├── 📂 utils/         # Security & JWT authorization utilities
+│   │   ├── config.py         # Application configuration & .env loader
+│   │   ├── database.py       # Database connection & session factory
+│   │   └── main.py           # FastAPI entry point & CORS configuration
+│   ├── 📂 tests/             # Automated test suite (pytest)
+│   ├── 📂 docs/              # System & RAG documentation
+│   ├── 📂 uploads/           # Ephemeral storage for uploaded resumes
+│   ├── Procfile              # Railway process runner
+│   ├── railway.json          # Railway service deployment configuration
+│   ├── nixpacks.toml         # Nixpacks build specification for Python 3.11
+│   ├── runtime.txt           # Python runtime version
+│   ├── requirements.txt      # Python dependencies
+│   └── .env.example          # Backend environment variables template
+│
+├── 📂 frontend/              # React 18 + Vite Web Application
+│   ├── 📂 public/            # Static assets
+│   ├── 📂 src/
+│   │   ├── 📂 components/    # Reusable UI widgets (Sidebar, Layout, Copilot)
+│   │   ├── 📂 pages/         # Application pages (Auth, Dashboard, Copilot, Customizer)
+│   │   ├── 📂 services/      # Axios HTTP client with JWT interceptor
+│   │   ├── App.jsx           # Main routing & state
+│   │   └── App.css           # Styling & print stylesheets
+│   ├── package.json          # Node dependencies & build scripts
+│   └── vite.config.js        # Vite dev server & backend reverse-proxy
+│
+├── 📄 .gitignore             # Unified Git ignore rules
+├── 📄 LICENSE                # Open-source MIT License
+├── 📄 railway.json           # Root Railway monorepo deployment config
+└── 📄 README.md              # Project documentation & setup instructions
+```
 
 ---
 
@@ -36,52 +82,37 @@ An end-to-end full-stack AI career platform designed to empower students and job
 
 ---
 
-## 🏗️ Architecture & Workflow
+## 🚂 Deploying to Railway (Zero-Config Guide)
 
-```
-Candidate / User
-      │
-      ▼
-React 18 + Vite Frontend (Port 5173)
-  ├── Drag & Drop File Upload
-  ├── Speech-to-Text Voice Interface
-  ├── Interactive CV Customizer Canvas
-  └── Axios Interceptor with JWT Auth
-      │
-      ▼ REST APIs (Port 8001)
-FastAPI Python Backend
-  ├── Auth Service (bcrypt + JWT)
-  ├── Document Parser (pdfplumber / python-docx)
-  ├── Sliding-Window Text Chunker (500 chars, 100 overlap)
-  ├── Embedding Service (all-MiniLM-L6-v2)
-  ├── Vector Similarity Search & Context Filter
-  ├── Groq / LLaMA-3 Prompt Inference Engine
-  └── ReportLab Vector PDF Builder
-      │
-      ▼ Persistence
-SQLite / SQLAlchemy ORM Database
-```
+This repository includes native Railway configuration files (`railway.json`, `Procfile`, `nixpacks.toml`, and `runtime.txt`) for one-click deployment.
 
----
+### Step 1: Deploy the Backend Service
+1. Log in to [Railway](https://railway.app) and click **New Project**.
+2. Select **Deploy from GitHub repo** and choose this repository:  
+   `bharathkumarjm/Al-Career-Companion-Agent-for-Internship-Matching-and-Interview-Preparation`
+3. Click on the newly created service $\rightarrow$ go to **Settings**:
+   - Under **General** $\rightarrow$ **Root Directory**: Set to `/backend` (or leave blank; the root `railway.json` will automatically direct to `backend/`).
+4. Go to **Variables** and add your environment variables:
+   - `SECRET_KEY`: `InfosysAIInternship_2026_SecureKey_8392`
+   - `DATABASE_URL`: `sqlite:///./test.db`
+   - `GROQ_API_KEY`: *(your Groq API key)*
+   - `PYTHONPATH`: `.`
+5. Under **Settings** $\rightarrow$ **Networking**: Click **Generate Domain**.  
+   Railway will provide your public backend URL (e.g., `https://web-production-xxxx.up.railway.app`).
 
-## 💻 Technology Stack
-
-| Layer | Technologies |
-| :--- | :--- |
-| **Frontend** | React 18, Vite, React Router, Axios, CSS3, Web Speech API |
-| **Backend** | FastAPI, Uvicorn, Python 3.10+, Pydantic v2 |
-| **Database & ORM**| SQLite, SQLAlchemy |
-| **Security & Auth**| OAuth2 Password Bearer, JWT (`python-jose`), `passlib[bcrypt]` |
-| **AI / NLP / RAG** | SentenceTransformers (`all-MiniLM-L6-v2`), Groq API (LLaMA-3), Gemini |
-| **Document Processing** | `pdfplumber`, `python-docx`, ReportLab Platypus |
+### Step 2: Deploy the Frontend Service
+1. In the same Railway project, click **+ New** $\rightarrow$ **GitHub Repo** (select this repository again).
+2. In the new service settings:
+   - **Root Directory**: Set to `/frontend`
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npx serve -s dist -l $PORT` (or deploy to Vercel/Netlify with Root Directory set to `frontend`).
+3. Under **Variables**:
+   - `VITE_API_BASE_URL`: `https://web-production-xxxx.up.railway.app` *(paste your Railway backend URL from Step 1)*
+4. Under **Networking**: Click **Generate Domain**.
 
 ---
 
-## 🚀 Quick Start Guide
-
-### Prerequisites
-- Python 3.10 or higher
-- Node.js 18 or higher & npm
+## 🚀 Local Development Setup
 
 ### 1. Clone the Repository
 ```bash
@@ -91,6 +122,8 @@ cd Al-Career-Companion-Agent-for-Internship-Matching-and-Interview-Preparation
 
 ### 2. Backend Setup
 ```bash
+cd backend
+
 # Create and activate virtual environment
 python -m venv .venv
 # On Windows:
@@ -98,7 +131,7 @@ python -m venv .venv
 # On Linux/macOS:
 # source .venv/bin/activate
 
-# Install backend dependencies
+# Install dependencies
 pip install -r requirements.txt
 
 # Configure environment variables
@@ -116,7 +149,7 @@ cd frontend
 # Install npm packages
 npm install
 
-# Launch frontend development server
+# Launch Vite dev server
 npm run dev
 ```
 Open [http://127.0.0.1:5173](http://127.0.0.1:5173) in your browser.
@@ -127,14 +160,14 @@ Open [http://127.0.0.1:5173](http://127.0.0.1:5173) in your browser.
 
 | Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :---: |
+| `GET` | `/health` | Health check endpoint for Railway/uptime monitors | No |
 | `POST` | `/api/auth/register` | Register new user account | No |
 | `POST` | `/api/auth/login` | Authenticate user & return JWT token | No |
 | `GET` | `/api/auth/me` | Retrieve authenticated user profile | Yes |
 | `POST` | `/api/documents/upload` | Upload & parse resume (PDF/DOCX/TXT) | Yes |
-| `GET` | `/api/documents` | List uploaded user documents | Yes |
-| `POST` | `/api/chat/ask` | Submit question to RAG AI Copilot | Yes |
+| `POST` | `/api/assistant/chat` | AI Career Companion dialogue | Yes |
 | `POST` | `/api/customization/download-cv-pdf` | Generate & download custom CV PDF | Yes |
-| `POST` | `/api/export/chat` | Export chat history (PDF/DOCX/TXT) | Yes |
+| `POST` | `/api/export/chat` | Export conversation (PDF/DOCX/TXT) | Yes |
 
 ---
 
