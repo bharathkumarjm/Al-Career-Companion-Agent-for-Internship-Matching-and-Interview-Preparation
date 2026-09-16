@@ -12,6 +12,15 @@ An end-to-end full-stack AI career platform designed to empower students and job
 
 ---
 
+## 🌐 Live Deployments
+
+- **Frontend Application**: [https://talentscript-ai.netlify.app/](https://talentscript-ai.netlify.app/)
+- **Backend API**: [https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/](https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/)
+- **API Documentation (Swagger)**: [https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/docs](https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/docs)
+- **Health Check**: [https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/health](https://al-career-companion-agent-for-internship-matchin-production.up.railway.app/health)
+
+---
+
 ## 📁 Repository Structure
 
 The project follows a clean monorepo architecture separating the backend REST API services from the frontend user interface:

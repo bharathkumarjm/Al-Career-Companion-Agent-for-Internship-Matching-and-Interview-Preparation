@@ -76,7 +76,11 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "*",
+        "https://talentscript-ai.netlify.app",
+        "https://al-career-companion-agent-for-internship-matchin-production.up.railway.app"
+    ],
     allow_origin_regex=r"https://.*\.netlify\.app|https://.*\.railway\.app|http://localhost:\d+|http://127\.0\.0\.1:\d+",
     allow_credentials=True,
     allow_methods=["*"],

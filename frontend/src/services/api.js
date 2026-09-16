@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://al-career-companion-agent-for-internship-matchin-production.up.railway.app",
 });
 
 api.interceptors.request.use(
