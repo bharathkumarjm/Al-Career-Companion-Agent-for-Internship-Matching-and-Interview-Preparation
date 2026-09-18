@@ -102,7 +102,7 @@ export default function Layout({ children, title, subtitle }) {
 
             <div className="app-footer-center">
               <span className="footer-engine-tag">
-                <span className="engine-dot"></span> 9 Modules Active
+                <span className="engine-dot"></span> 8 Core Modules Active
               </span>
             </div>
 
@@ -112,7 +112,7 @@ export default function Layout({ children, title, subtitle }) {
               <Link to="/skill-gap">Skill Gap</Link>
               <Link to="/customizer">CV Generator</Link>
               <Link to="/interview-prep">Interview Prep</Link>
-              <Link to="/application-tracker">Pipeline Tracker</Link>
+              <Link to="/career-assistant">AI Career Companion</Link>
             </div>
           </div>
         </footer>

@@ -91,16 +91,6 @@ function IconInterviewPrep() {
   );
 }
 
-function IconPipelineTracker() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="5" height="18" rx="1.5" />
-      <rect x="10" y="3" width="5" height="12" rx="1.5" />
-      <rect x="17" y="3" width="5" height="15" rx="1.5" />
-      <line x1="10" y1="18" x2="15" y2="18" strokeWidth="2" />
-    </svg>
-  );
-}
 
 function IconAIMentor() {
   return (
@@ -115,7 +105,6 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [topMatch, setTopMatch] = useState(null);
-  const [appStats, setAppStats] = useState({ total: 0, interviewing: 0, offered: 0, screening: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -141,14 +130,6 @@ export default function Dashboard() {
           }
         } catch (err) {
           console.warn("Could not load matches:", err);
-        }
-
-        // Fetch application stats
-        try {
-          const statsRes = await api.get("/api/applications/stats");
-          setAppStats(statsRes.data);
-        } catch (err) {
-          console.warn("Could not load app stats:", err);
         }
       } finally {
         setLoading(false);
@@ -238,18 +219,7 @@ export default function Dashboard() {
     },
     {
       id: "MOD-08",
-      title: "8. Job Application Pipeline Tracker",
-      desc: "Monitor and advance applications from Applied to Offer on a live Kanban board.",
-      icon: <IconPipelineTracker />,
-      color: "#0891b2",
-      link: "/application-tracker",
-      action: "Open Pipeline Tracker",
-      status: `${appStats.total} Tracked (${appStats.interviewing || 0} Interviews)`,
-      statusColor: "#0891b2"
-    },
-    {
-      id: "MOD-09",
-      title: "9. AI Career Companion Agent",
+      title: "8. AI Career Companion Agent",
       desc: "Resume-grounded role recommendations, interview preparation packs, and document-based Q&A.",
       icon: <IconAIMentor />,
       color: "#7c3aed",
@@ -297,14 +267,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="kpi-card" onClick={() => navigate("/application-tracker")} style={{ cursor: "pointer" }}>
-          <div className="kpi-icon" style={{ background: "rgba(8, 145, 178, 0.1)", color: "#0891b2" }}>
-            <IconPipelineTracker />
+        <div className="kpi-card" onClick={() => navigate("/skill-gap")} style={{ cursor: "pointer" }}>
+          <div className="kpi-icon" style={{ background: "rgba(217, 119, 6, 0.1)", color: "#d97706" }}>
+            <IconSkillGap />
           </div>
           <div>
-            <span className="kpi-label">Active Pipeline</span>
-            <h3 className="kpi-val">{appStats.total || 5}</h3>
-            <small>{appStats.interviewing || 1} in Interview Stage</small>
+            <span className="kpi-label">Skill Gap Analysis</span>
+            <h3 className="kpi-val">Active</h3>
+            <small>Target Roadmaps Ready</small>
           </div>
         </div>
 

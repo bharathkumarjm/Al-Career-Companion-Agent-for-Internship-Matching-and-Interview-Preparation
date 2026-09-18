@@ -57,15 +57,8 @@ export function LandingPage() {
     },
     {
       id: 8,
-      title: "8. Job Application Pipeline Tracker",
-      desc: "Monitor and manage application stages from Applied to Offer with an interactive Kanban board.",
-      icon: "📋",
-      path: "/application-tracker"
-    },
-    {
-      id: 9,
-      title: "9. Ask AI Mentor",
-      desc: "Continuous conversational AI mentorship loaded with your personal profile, resume, and application context.",
+      title: "8. Ask AI Mentor",
+      desc: "Continuous conversational AI mentorship loaded with your personal profile, resume, and skills context.",
       icon: "💬",
       path: "/career-assistant"
     }
@@ -90,13 +83,13 @@ export function LandingPage() {
         </Link>
 
         <div className="landing-nav-center">
-          <a href="#modules" className="nav-menu-link">9 Modules</a>
+          <a href="#modules" className="nav-menu-link">8 Modules</a>
           <button type="button" onClick={() => handleModuleClick("/resume-parser")} className="nav-menu-link-btn">Resume Parser</button>
           <button type="button" onClick={() => handleModuleClick("/job-matching")} className="nav-menu-link-btn">Job Match</button>
           <button type="button" onClick={() => handleModuleClick("/skill-gap")} className="nav-menu-link-btn">Skill Gap</button>
           <button type="button" onClick={() => handleModuleClick("/customizer")} className="nav-menu-link-btn">CV Builder</button>
           <button type="button" onClick={() => handleModuleClick("/interview-prep")} className="nav-menu-link-btn">Interview Prep</button>
-          <button type="button" onClick={() => handleModuleClick("/application-tracker")} className="nav-menu-link-btn">Tracker</button>
+          <button type="button" onClick={() => handleModuleClick("/career-assistant")} className="nav-menu-link-btn">AI Copilot</button>
         </div>
 
         <div className="landing-nav-links">
@@ -199,10 +192,10 @@ export function LandingPage() {
                 </div>
 
                 <div className="m-feed-item">
-                  <span className="feed-icon">📋</span>
+                  <span className="feed-icon">🤖</span>
                   <div>
-                    <strong>Kanban Pipeline</strong>
-                    <p>Moved application to: <em>Interview Round 2</em></p>
+                    <strong>AI Career Companion</strong>
+                    <p>Generated personalized interview preparation roadmap</p>
                   </div>
                 </div>
               </div>
@@ -262,11 +255,11 @@ export function LandingPage() {
               Talent<span>Sprint AI</span>
             </div>
             <p className="footer-brand-mission">
-              Empowering the next generation of engineers with an integrated, autonomous career accelerator: semantic RAG job matching, real-time resume ATS optimization, mock interviews, and live pipeline management.
+              Empowering the next generation of engineers with an integrated, autonomous career accelerator: semantic RAG job matching, real-time resume ATS optimization, mock interviews, and personalized AI career mentorship.
             </p>
             <div className="footer-status-pill">
               <span className="status-indicator-dot"></span>
-              <span>All 9 Intelligence Modules Live</span>
+              <span>All 8 Intelligence Modules Live</span>
             </div>
           </div>
 
@@ -288,8 +281,7 @@ export function LandingPage() {
             <ul>
               <li><button type="button" onClick={() => handleModuleClick("/customizer")} className="footer-nav-btn">6. Role-Specific ATS CV</button></li>
               <li><button type="button" onClick={() => handleModuleClick("/interview-prep")} className="footer-nav-btn">7. Mock Interview Practice</button></li>
-              <li><button type="button" onClick={() => handleModuleClick("/application-tracker")} className="footer-nav-btn">8. Application Pipeline Tracker</button></li>
-              <li><button type="button" onClick={() => handleModuleClick("/career-assistant")} className="footer-nav-btn">9. Conversational AI Mentor</button></li>
+              <li><button type="button" onClick={() => handleModuleClick("/career-assistant")} className="footer-nav-btn">8. Conversational AI Mentor</button></li>
               <li><button type="button" onClick={() => handleModuleClick("/customizer")} className="footer-nav-btn">📄 1-Click PDF CV Exporter</button></li>
             </ul>
           </div>
@@ -354,8 +346,7 @@ export function Login() {
       case "/skill-gap": return "Module 5: Skill Gap Analysis";
       case "/customizer": return "Module 6: Resume & Cover Customization";
       case "/interview-prep": return "Module 7: Interview Preparation";
-      case "/application-tracker": return "Module 8: Job Application Pipeline Tracker";
-      case "/career-assistant": return "Module 9: AI Career Assistant";
+      case "/career-assistant": return "Module 8: AI Career Assistant";
       default: return null;
     }
   };
@@ -420,7 +411,7 @@ export function Login() {
           </h1>
 
           <p className="hero-pane-desc">
-            Your personalized career launchpad: semantic RAG job matching, real-time resume ATS optimization, STAR behavioral interview coaching, and live application pipeline tracking.
+            Your personalized career launchpad: semantic RAG job matching, real-time resume ATS optimization, STAR behavioral interview coaching, and continuous AI mentorship.
           </p>
 
           {/* Floating UI Feature Cards */}

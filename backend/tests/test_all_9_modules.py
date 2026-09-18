@@ -37,8 +37,8 @@ def test_system_root():
     res = client.get("/")
     assert res.status_code == 200
     data = res.json()
-    assert len(data["modules"]) == 9
-    print("[PASS] System root lists all 9 modules")
+    assert len(data["modules"]) == 8
+    print("[PASS] System root lists all 8 modules")
 
 
 def test_module_1_profile_and_resume_management():
@@ -255,40 +255,7 @@ def test_module_7_interview_prep():
     print(f"[PASS] Module 7: AI Mock Answer Evaluator scored response at {evaluation['score']}/10")
 
 
-def test_module_8_application_tracker():
-    token = get_auth_token()
-    headers = {"Authorization": f"Bearer {token}"}
-
-    # 1. Add application
-    res = client.post("/api/applications/", json={
-        "company": "Stripe Labs",
-        "role": "Payments Engineering Intern",
-        "location": "Remote",
-        "stipend": "₹40,000 / month",
-        "status": "Applied",
-        "notes": "Applied via referral"
-    }, headers=headers)
-    assert res.status_code == 200
-    new_app = res.json()
-    app_id = new_app["id"]
-
-    # 2. Update status to Interviewing
-    res = client.put(f"/api/applications/{app_id}", json={
-        "status": "Interviewing",
-        "interview_date": "Next Monday 10:00 AM"
-    }, headers=headers)
-    assert res.status_code == 200
-    assert res.json()["status"] == "Interviewing"
-
-    # 3. Get stats
-    res = client.get("/api/applications/stats", headers=headers)
-    assert res.status_code == 200
-    stats = res.json()
-    assert stats["total"] >= 1
-    print(f"[PASS] Module 8: Application Tracking pipeline active with {stats['total']} total applications")
-
-
-def test_module_9_conversational_career_assistant():
+def test_module_8_conversational_career_assistant():
     token = get_auth_token()
     headers = {"Authorization": f"Bearer {token}"}
 
@@ -301,7 +268,7 @@ def test_module_9_conversational_career_assistant():
     chat_data = res.json()
     assert "response" in chat_data
     assert len(chat_data["response"]) > 20
-    print("[PASS] Module 9: AI Conversational Career Assistant provided personalized mentorship")
+    print("[PASS] Module 8: AI Conversational Career Assistant provided personalized mentorship")
 
 
 if __name__ == "__main__":
@@ -313,8 +280,7 @@ if __name__ == "__main__":
     test_module_5_skill_gap_analysis()
     test_module_6_customization()
     test_module_7_interview_prep()
-    test_module_8_application_tracker()
-    test_module_9_conversational_career_assistant()
+    test_module_8_conversational_career_assistant()
     print("\n=======================================================")
-    print("ALL 9 CORE MODULES VERIFIED & WORKING PERFECTLY!")
+    print("ALL 8 CORE MODULES VERIFIED & WORKING PERFECTLY!")
     print("=======================================================")

@@ -16,8 +16,6 @@ export default function KnowledgeBasePage() {
   const [ragQuery, setRagQuery] = useState("");
   const [ragResponse, setRagResponse] = useState(null);
   const [ragLoading, setRagLoading] = useState(false);
-  const [appliedKeys, setAppliedJobs] = useState(new Set());
-  const [applyToast, setApplyToast] = useState(null);
 
   // Voice Speech Recognition
   const [isListening, setIsListening] = useState(false);
@@ -25,30 +23,6 @@ export default function KnowledgeBasePage() {
 
   // Text-to-Speech Output
   const [isSpeaking, setIsSpeaking] = useState(false);
-
-  useEffect(() => {
-    const fetchExistingApplications = async () => {
-      try {
-        const res = await api.get("/api/applications/");
-        const keys = new Set(
-          res.data.map(
-            (a) => `${a.company.trim().toLowerCase()}_${a.role.trim().toLowerCase()}`
-          )
-        );
-        setAppliedJobs(keys);
-      } catch (err) {
-        console.warn("Could not fetch applied applications:", err);
-      }
-    };
-    fetchExistingApplications();
-  }, []);
-
-  useEffect(() => {
-    if (applyToast) {
-      const timer = setTimeout(() => setApplyToast(null), 6000);
-      return () => clearTimeout(timer);
-    }
-  }, [applyToast]);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -164,28 +138,6 @@ export default function KnowledgeBasePage() {
       alert("RAG query failed. Please check backend connection.");
     } finally {
       setRagLoading(false);
-    }
-  };
-
-  const handleTrackApplication = async (job) => {
-    const key = `${job.company.trim().toLowerCase()}_${job.title.trim().toLowerCase()}`;
-    try {
-      await api.post("/api/applications", {
-        company: job.company,
-        role: job.title,
-        location: `${job.location} (${job.work_mode})`,
-        stipend: job.stipend,
-        status: "Applied",
-        notes: `Added from Knowledge Base. Requirements: ${job.required_skills}`
-      });
-      setAppliedJobs((prev) => new Set([...prev, key]));
-      setApplyToast({
-        company: job.company,
-        role: job.title,
-        stipend: job.stipend
-      });
-    } catch (err) {
-      alert("Failed to track application.");
     }
   };
 
@@ -394,56 +346,17 @@ export default function KnowledgeBasePage() {
                 )}
 
                 <div className="job-card-actions">
-                  {appliedKeys.has(`${job.company.trim().toLowerCase()}_${job.title.trim().toLowerCase()}`) ? (
-                    <Link to="/application-tracker" className="btn-applied-link">
-                      ✅ Applied • In Pipeline →
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleTrackApplication(job)}
-                      className="btn-sm btn-primary"
-                    >
-                      + Add to Application Tracker
-                    </button>
-                  )}
                   <Link
                     to={`/customizer?company=${encodeURIComponent(job.company)}&role=${encodeURIComponent(job.title)}`}
-                    className="btn-sm btn-outline"
+                    className="btn-sm btn-primary"
                   >
-                    Tailor Cover Letter
+                    ✍️ Tailor Cover Letter
                   </Link>
                 </div>
               </div>
             ))}
         </div>
       </section>
-
-      {/* Floating On-Screen Notification (Bottom Right) */}
-      {applyToast && (
-        <div className="floating-apply-toast">
-          <div className="toast-icon-wrap">✅</div>
-          <div className="toast-body">
-            <h5 className="toast-title">Application Added to Pipeline!</h5>
-            <p className="toast-desc">
-              <strong>{applyToast.role}</strong> at <strong>{applyToast.company}</strong> has been added to your Tracker.
-            </p>
-          </div>
-          <div className="toast-actions-row">
-            <Link to="/application-tracker" className="btn-toast-view">
-              View Tracker →
-            </Link>
-            <button
-              type="button"
-              onClick={() => setApplyToast(null)}
-              className="btn-toast-close"
-              aria-label="Close notification"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </Layout>
   );
 }

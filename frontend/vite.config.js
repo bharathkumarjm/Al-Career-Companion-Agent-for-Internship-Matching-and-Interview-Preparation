@@ -18,7 +18,6 @@ export default defineConfig({
       '/skill-gap': { target: 'http://127.0.0.1:8001', changeOrigin: true },
       '/customization': { target: 'http://127.0.0.1:8001', changeOrigin: true },
       '/interview-prep': { target: 'http://127.0.0.1:8001', changeOrigin: true },
-      '/applications': { target: 'http://127.0.0.1:8001', changeOrigin: true },
       '/dashboard': { target: 'http://127.0.0.1:8001', changeOrigin: true },
       '/cv': { target: 'http://127.0.0.1:8001', changeOrigin: true },
       '/health': { target: 'http://127.0.0.1:8001', changeOrigin: true },

@@ -20,7 +20,6 @@ from app.database import get_db
 from app.models.user import User
 from app.models.resume import Resume
 from app.models.student_profile import StudentProfile
-from app.models.application import Application
 from app.utils.auth import get_current_user
 from app.services.groq_service import (
     chat_career_assistant,
@@ -187,7 +186,6 @@ def chat_with_career_assistant(
 
     # 3. Assemble student profile & EXTRACTED RESUME context
     profile = db.query(StudentProfile).filter(StudentProfile.user_id == current_user.id).first()
-    app_count = db.query(Application).filter(Application.user_id == current_user.id).count()
     resume_data = _get_active_resume_data(current_user.id, db)
 
     skills_list = []
@@ -202,7 +200,6 @@ def chat_with_career_assistant(
         "target_role": profile.target_role if profile else "Software Engineer Intern",
         "university": profile.university if profile else "Engineering University",
         "skills": skills_list,
-        "application_count": app_count,
         "nlp_insights": nlp_insights,
         "resume_data": resume_data,
         "active_resume_filename": resume_data.get("filename", ""),

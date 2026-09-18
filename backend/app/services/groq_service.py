@@ -631,7 +631,6 @@ def chat_career_assistant(messages: List[Dict[str, str]], student_context: Optio
         name = student_context.get("name", "Candidate")
         target_role = student_context.get("target_role", "Software Engineer Intern")
         univ = student_context.get("university", "Engineering University")
-        app_count = student_context.get("application_count", 0)
 
         # 2. Extracted Resume Data (Active Resume Integration)
         resume_data = student_context.get("resume_data") or {}
@@ -703,7 +702,6 @@ CANDIDATE'S EXTRACTED RESUME DATA (PRIMARY CONTEXT):
 {edu_str}
 - Certifications & Honors: {', '.join(certs_list) if certs_list else 'Technical coursework & verified badges'}
 - Resume Career Recommendations: {r_rec}
-- Active Job Tracker Pipeline Count: {app_count} applications
 """
         if student_context.get("nlp_insights"):
             nlp = student_context["nlp_insights"]

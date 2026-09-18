@@ -9,8 +9,6 @@ export default function JobMatchingPage() {
   const [loading, setLoading] = useState(true);
   const [minScore, setMinScore] = useState(0);
   const [statusMsg, setStatusMsg] = useState("");
-  const [appliedKeys, setAppliedJobs] = useState(new Set());
-  const [applyToast, setApplyToast] = useState(null);
 
   const loadMatches = async () => {
     setLoading(true);
@@ -26,55 +24,9 @@ export default function JobMatchingPage() {
     }
   };
 
-  const loadExistingApplications = async () => {
-    try {
-      const res = await api.get("/api/applications/");
-      const keys = new Set(
-        res.data.map(
-          (a) => `${a.company.trim().toLowerCase()}_${a.role.trim().toLowerCase()}`
-        )
-      );
-      setAppliedJobs(keys);
-    } catch (err) {
-      console.warn("Could not fetch applied list:", err);
-    }
-  };
-
   useEffect(() => {
     loadMatches();
-    loadExistingApplications();
   }, []);
-
-  useEffect(() => {
-    if (applyToast) {
-      const timer = setTimeout(() => setApplyToast(null), 6000);
-      return () => clearTimeout(timer);
-    }
-  }, [applyToast]);
-
-  const handleTrackApplication = async (match) => {
-    const key = `${match.company.trim().toLowerCase()}_${match.title.trim().toLowerCase()}`;
-    try {
-      await api.post("/api/applications", {
-        company: match.company,
-        role: match.title,
-        location: `${match.location} (${match.work_mode})`,
-        stipend: match.stipend,
-        match_score: match.compatibility_score,
-        status: "Applied",
-        notes: `Matched at ${match.compatibility_score}%. Matched skills: ${match.matched_skills.join(", ")}`
-      });
-      setAppliedJobs((prev) => new Set([...prev, key]));
-      setApplyToast({
-        company: match.company,
-        role: match.title,
-        stipend: match.stipend,
-        score: match.compatibility_score
-      });
-    } catch (err) {
-      alert("Failed to track application.");
-    }
-  };
 
   const filteredMatches = matchingData?.matches?.filter(
     (m) => m.compatibility_score >= minScore
@@ -319,22 +271,9 @@ export default function JobMatchingPage() {
 
               {/* Actions Row */}
               <div className="match-card-actions">
-                {appliedKeys.has(`${match.company.trim().toLowerCase()}_${match.title.trim().toLowerCase()}`) ? (
-                  <Link to="/application-tracker" className="btn-applied-link">
-                    ✅ Applied • In Pipeline →
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleTrackApplication(match)}
-                    className="btn-sm btn-primary"
-                  >
-                    + Add to Application Tracker
-                  </button>
-                )}
                 <Link
                   to={`/customizer?company=${encodeURIComponent(match.company)}&role=${encodeURIComponent(match.title)}`}
-                  className="btn-sm btn-outline"
+                  className="btn-sm btn-primary"
                 >
                   ✍️ Tailor Resume & Cover
                 </Link>
@@ -354,32 +293,6 @@ export default function JobMatchingPage() {
             </div>
           ))}
       </div>
-
-      {/* Floating On-Screen Notification (Bottom Right) */}
-      {applyToast && (
-        <div className="floating-apply-toast">
-          <div className="toast-icon-wrap">✅</div>
-          <div className="toast-body">
-            <h5 className="toast-title">Application Added to Pipeline!</h5>
-            <p className="toast-desc">
-              <strong>{applyToast.role}</strong> at <strong>{applyToast.company}</strong> has been tracked successfully.
-            </p>
-          </div>
-          <div className="toast-actions-row">
-            <Link to="/application-tracker" className="btn-toast-view">
-              View Tracker →
-            </Link>
-            <button
-              type="button"
-              onClick={() => setApplyToast(null)}
-              className="btn-toast-close"
-              aria-label="Close notification"
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
     </Layout>
   );
 }

@@ -8,7 +8,6 @@ from app.models.user import User
 from app.models.student_profile import StudentProfile
 from app.models.resume import Resume
 from app.models.analysis import ResumeAnalysis
-from app.models.application import Application
 from app.models.internship import Internship
 from app.models.project import Project
 from app.models.task import Task
@@ -32,7 +31,6 @@ from app.routers.matching import router as matching_router
 from app.routers.skill_gap import router as skill_gap_router
 from app.routers.customization import router as customization_router
 from app.routers.interview_prep import router as interview_prep_router
-from app.routers.application import router as application_router
 from app.routers.career_assistant import router as career_assistant_router
 
 # Import existing routers for compatibility
@@ -99,7 +97,6 @@ app.include_router(matching_router)
 app.include_router(skill_gap_router)
 app.include_router(customization_router)
 app.include_router(interview_prep_router)
-app.include_router(application_router)
 app.include_router(career_assistant_router)
 
 # Register existing compatibility routers
@@ -133,8 +130,7 @@ def root():
             "5. Skill Gap Analysis and Improvement Recommendations",
             "6. Role-specific Resume and Cover Letter Customization",
             "7. Interview Preparation with Role-specific Questions and Strategies",
-            "8. Application Tracking and Management",
-            "9. Conversational Career Assistant for ongoing guidance"
+            "8. Conversational Career Assistant for ongoing guidance"
         ]
     }
 

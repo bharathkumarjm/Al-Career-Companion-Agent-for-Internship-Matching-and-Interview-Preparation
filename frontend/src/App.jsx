@@ -15,7 +15,6 @@ import JobMatchingPage from "./pages/JobMatchingPage";
 import SkillGapPage from "./pages/SkillGapPage";
 import CustomizerPage from "./pages/CustomizerPage";
 import InterviewPrepPage from "./pages/InterviewPrepPage";
-import ApplicationTrackerPage from "./pages/ApplicationTrackerPage";
 import CareerAssistantPage from "./pages/CareerAssistantPage";
 
 import "./App.css";
@@ -121,17 +120,7 @@ function App() {
           }
         />
 
-        {/* Module 8: Application Tracking and Management */}
-        <Route
-          path="/application-tracker"
-          element={
-            <ProtectedRoute>
-              <ApplicationTrackerPage />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Module 9: Conversational Career Assistant for ongoing guidance */}
+        {/* Module 8: Conversational Career Assistant for ongoing guidance */}
         <Route
           path="/career-assistant"
           element={
@@ -142,12 +131,13 @@ function App() {
         />
 
         {/* BACKWARDS COMPATIBILITY REDIRECTS */}
+        <Route path="/application-tracker" element={<Navigate to="/dashboard" replace />} />
         <Route path="/resume" element={<Navigate to="/profile" replace />} />
         <Route path="/analysis" element={<Navigate to="/skill-gap" replace />} />
         <Route path="/internships" element={<Navigate to="/knowledge-base" replace />} />
         <Route path="/cv" element={<Navigate to="/customizer" replace />} />
-        <Route path="/tasks" element={<Navigate to="/application-tracker" replace />} />
-        <Route path="/submissions" element={<Navigate to="/application-tracker" replace />} />
+        <Route path="/tasks" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/submissions" element={<Navigate to="/dashboard" replace />} />
         <Route path="/code-review" element={<Navigate to="/interview-prep" replace />} />
         <Route path="/feedback" element={<Navigate to="/career-assistant" replace />} />
         <Route path="/training" element={<Navigate to="/interview-prep" replace />} />
