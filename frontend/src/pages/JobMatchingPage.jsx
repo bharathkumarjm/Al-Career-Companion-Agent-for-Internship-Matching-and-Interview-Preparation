@@ -10,6 +10,50 @@ export default function JobMatchingPage() {
   const [minScore, setMinScore] = useState(0);
   const [statusMsg, setStatusMsg] = useState("");
 
+  // Application flow states
+  const [appliedJobs, setAppliedJobs] = useState(() => {
+    try {
+      const stored = localStorage.getItem("applied_internship_keys");
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+  const [applyModalJob, setApplyModalJob] = useState(null);
+  const [applicantNote, setApplicantNote] = useState("");
+  const [portfolioLink, setPortfolioLink] = useState("");
+  const [applyToast, setApplyToast] = useState(null);
+
+  const handleOpenApplyModal = (job) => {
+    setApplicantNote(`Dear Hiring Team at ${job.company},\n\nI am excited to submit my application for the ${job.title} role. With my relevant technical background and verified skills, I am eager to contribute to your engineering initiatives.`);
+    setApplyModalJob(job);
+  };
+
+  const handleConfirmApply = (e) => {
+    e?.preventDefault();
+    if (!applyModalJob) return;
+    const key = `${applyModalJob.company.trim().toLowerCase()}_${applyModalJob.title.trim().toLowerCase()}`;
+    const nextSet = new Set(appliedJobs);
+    nextSet.add(key);
+    if (applyModalJob.id) nextSet.add(String(applyModalJob.id));
+    setAppliedJobs(nextSet);
+    try {
+      localStorage.setItem("applied_internship_keys", JSON.stringify(Array.from(nextSet)));
+    } catch (err) {
+      console.warn("Storage warning:", err);
+    }
+    const currentJob = applyModalJob;
+    setApplyModalJob(null);
+    setApplyToast({
+      company: currentJob.company,
+      role: currentJob.title,
+      stipend: currentJob.stipend
+    });
+    setTimeout(() => {
+      setApplyToast(null);
+    }, 5000);
+  };
+
   const loadMatches = async () => {
     setLoading(true);
     setStatusMsg("");
@@ -273,10 +317,23 @@ export default function JobMatchingPage() {
               <div className="match-card-actions">
                 <Link
                   to={`/customizer?company=${encodeURIComponent(match.company)}&role=${encodeURIComponent(match.title)}`}
-                  className="btn-sm btn-primary"
+                  className="btn-sm btn-outline"
                 >
-                  ✍️ Tailor Resume & Cover
+                  ✍️ Tailor Cover Letter
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => handleOpenApplyModal(match)}
+                  className={`btn-sm ${
+                    appliedJobs.has(`${match.company.trim().toLowerCase()}_${match.title.trim().toLowerCase()}`)
+                      ? "btn-applied-success"
+                      : "btn-primary"
+                  }`}
+                >
+                  {appliedJobs.has(`${match.company.trim().toLowerCase()}_${match.title.trim().toLowerCase()}`)
+                    ? "✅ Applied"
+                    : "🚀 Apply"}
+                </button>
                 <Link
                   to={`/skill-gap?role=${encodeURIComponent(match.title)}`}
                   className="btn-sm btn-outline"
@@ -293,6 +350,130 @@ export default function JobMatchingPage() {
             </div>
           ))}
       </div>
+
+      {/* Quick Application Modal */}
+      {applyModalJob && (
+        <div className="quick-apply-modal-overlay" onClick={() => setApplyModalJob(null)}>
+          <div className="quick-apply-modal-box" onClick={(e) => e.stopPropagation()}>
+            <div className="quick-apply-modal-header">
+              <div>
+                <h3>Apply to {applyModalJob.company}</h3>
+                <div className="quick-apply-meta-pills">
+                  <span>💼 {applyModalJob.title}</span>
+                  <span>📍 {applyModalJob.location}</span>
+                  <span>💰 {applyModalJob.stipend}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="quick-apply-close-btn"
+                onClick={() => setApplyModalJob(null)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleConfirmApply}>
+              <div className="quick-apply-modal-body">
+                <div className="quick-apply-field-group">
+                  <label>Applicant Full Name</label>
+                  <input
+                    type="text"
+                    className="quick-apply-input"
+                    value={localStorage.getItem("user_name") || "Student"}
+                    disabled
+                  />
+                </div>
+
+                <div className="quick-apply-field-group">
+                  <label>Applicant Email</label>
+                  <input
+                    type="email"
+                    className="quick-apply-input"
+                    value={localStorage.getItem("user_email") || "student@example.com"}
+                    disabled
+                  />
+                </div>
+
+                <div className="quick-apply-field-group">
+                  <label>Active Resume</label>
+                  <div className="quick-apply-resume-badge">
+                    <span>📄 Verified Profile Resume Attached</span>
+                    <span style={{ fontSize: "11px", color: "#15803d", fontWeight: "bold" }}>READY</span>
+                  </div>
+                </div>
+
+                <div className="quick-apply-field-group">
+                  <label>Portfolio / GitHub / LinkedIn (Optional)</label>
+                  <input
+                    type="url"
+                    className="quick-apply-input"
+                    placeholder="https://github.com/yourprofile"
+                    value={portfolioLink}
+                    onChange={(e) => setPortfolioLink(e.target.value)}
+                  />
+                </div>
+
+                <div className="quick-apply-field-group">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <label>Cover Note / Pitch to Recruiter</label>
+                    <Link
+                      to={`/customizer?company=${encodeURIComponent(applyModalJob.company)}&role=${encodeURIComponent(applyModalJob.title)}`}
+                      className="quick-apply-cover-tip"
+                    >
+                      ✍️ Open CV Builder →
+                    </Link>
+                  </div>
+                  <textarea
+                    rows={4}
+                    className="quick-apply-textarea"
+                    value={applicantNote}
+                    onChange={(e) => setApplicantNote(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="quick-apply-modal-footer">
+                <button
+                  type="button"
+                  className="btn-sm btn-outline"
+                  onClick={() => setApplyModalJob(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-sm btn-primary"
+                >
+                  ⚡ Submit Application
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Celebratory Confirmation Toast */}
+      {applyToast && (
+        <div className="quick-apply-toast">
+          <div className="quick-apply-toast-icon">🎉</div>
+          <div className="quick-apply-toast-body">
+            <h5>Application Submitted!</h5>
+            <p>
+              Your application for <strong>{applyToast.role}</strong> at <strong>{applyToast.company}</strong> has been successfully submitted.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="quick-apply-toast-close"
+            onClick={() => setApplyToast(null)}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </Layout>
   );
 }

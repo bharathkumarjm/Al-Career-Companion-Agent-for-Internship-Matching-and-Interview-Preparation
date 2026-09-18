@@ -231,7 +231,7 @@ export default function Sidebar({ isOpen, onClose }) {
         <div className="nav-items-list">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
-            const isMentor = item.id === "MOD-09";
+            const isMentor = item.id === "MOD-08";
             return (
               <Link
                 key={item.path}

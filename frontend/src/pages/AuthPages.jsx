@@ -1401,7 +1401,7 @@ export function ResetPassword() {
             Choose a New <span>Password</span>.
           </h1>
           <p className="hero-pane-desc">
-            Keep your account secure with enterprise-grade password criteria. Your new password will grant immediate access to your candidate profile and all 9 modules.
+            Keep your account secure with enterprise-grade password criteria. Your new password will grant immediate access to your candidate profile and all 8 modules.
           </p>
         </div>
       </div>

@@ -22,7 +22,7 @@ from app.models.file import FileRecord
 from app.models.project_progress import ProjectProgress
 from app.models.cv import CV
 
-# Import core routers for the 9 requirements
+# Import core routers for the 8 requirements
 from app.routers.auth import router as auth_router
 from app.routers.profile import router as profile_router
 from app.routers.resume import router as resume_router
@@ -88,7 +88,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register the 9 core requirement routers
+# Register the 8 core requirement routers
 app.include_router(auth_router)
 app.include_router(profile_router)
 app.include_router(resume_router)

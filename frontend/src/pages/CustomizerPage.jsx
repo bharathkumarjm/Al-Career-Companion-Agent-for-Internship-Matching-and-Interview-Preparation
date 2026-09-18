@@ -79,7 +79,7 @@ export default function CustomizerPage() {
         title: "Autonomous Internship Intelligence Platform",
         tech: "Python, FastAPI, React, ChromaDB, PostgreSQL",
         bullets: [
-          "Architected full-stack career platform with 9 modules including ATS customization and interview preparation.",
+          "Architected full-stack career platform with 8 modules including ATS customization and interview preparation.",
           "Built RAG pipeline retrieving verified internship postings with semantic search."
         ]
       },
