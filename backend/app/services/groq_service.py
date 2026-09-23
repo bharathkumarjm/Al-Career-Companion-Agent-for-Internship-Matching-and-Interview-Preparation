@@ -12,29 +12,81 @@ except Exception as e:
     print(f"Warning: Could not initialize Groq client: {e}")
 
 PRIMARY_MODEL = "qwen/qwen3.8-27b"
-FALLBACK_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
+FALLBACK_MODELS = ["allam-2-7b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"]
 MODEL_NAME = PRIMARY_MODEL
 
 
-def _call_groq(messages: List[Dict[str, str]], json_mode: bool = True, temperature: float = 0.2, max_tokens: int = 2048, model: Optional[str] = None) -> Optional[str]:
-    """Helper to call Groq chat completion safely with automatic fallback."""
+def _sanitize_unicode(text: str) -> str:
+    """Replace non-standard unicode characters that can break Windows consoles or markdown renderers."""
+    if not text:
+        return ""
+    replacements = {
+        "\u2011": "-",
+        "\u2012": "-",
+        "\u2013": "-",
+        "\u2014": "--",
+        "\u2018": "'",
+        "\u2019": "'",
+        "\u201a": "'",
+        "\u201b": "'",
+        "\u201c": '"',
+        "\u201d": '"',
+        "\u201e": '"',
+        "\u2026": "...",
+        "\u2022": "*",
+        "\u00a0": " ",
+    }
+    for k, v in replacements.items():
+        text = text.replace(k, v)
+    return text
+
+
+def _clean_and_parse_json(text: Optional[str]) -> Optional[Dict[str, Any]]:
+    """Clean markdown code fences and parse JSON safely."""
+    if not text:
+        return None
+    cleaned = _sanitize_unicode(text)
+    cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned.strip(), flags=re.MULTILINE)
+    cleaned = re.sub(r"```$", "", cleaned.strip(), flags=re.MULTILINE).strip()
+    try:
+        return json.loads(cleaned)
+    except Exception:
+        pass
+    match = re.search(r"(\{.*\})", cleaned, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(1))
+        except Exception:
+            pass
+    return None
+
+
+def _call_groq(messages: List[Dict[str, str]], json_mode: bool = True, temperature: float = 0.2, max_tokens: int = 750, model: Optional[str] = None) -> Optional[str]:
+    """Helper to call Groq chat completion safely with automatic fallback and token quota protection."""
     if not client:
         return None
     models_to_try = [model] if model else [PRIMARY_MODEL] + [m for m in FALLBACK_MODELS if m != PRIMARY_MODEL]
     for current_model in models_to_try:
         try:
+            if "qwen" in current_model:
+                toks = min(max_tokens, 750)
+            elif "gpt-oss" in current_model:
+                toks = max(max_tokens, 1500)
+            else:
+                toks = min(max_tokens, 2048)
+
             kwargs = {
                 "model": current_model,
                 "messages": messages,
                 "temperature": temperature,
-                "max_completion_tokens": max_tokens,
+                "max_completion_tokens": toks,
             }
             if json_mode:
                 kwargs["response_format"] = {"type": "json_object"}
             response = client.chat.completions.create(**kwargs)
             content = response.choices[0].message.content
             if content and content.strip():
-                return content
+                return _sanitize_unicode(content)
         except Exception as err:
             try:
                 print(f"Groq API call error ({current_model}): {str(err).encode('ascii', 'replace').decode('ascii')}")
@@ -106,11 +158,9 @@ You MUST return ONLY valid JSON with this exact schema:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Heuristic fallback if LLM offline or format error
     return _heuristic_resume_parser(resume_text)
@@ -239,11 +289,9 @@ Format your response as a valid JSON object:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Fallback grounded synthesis
     top_matches = retrieved_internships[:3]
@@ -327,11 +375,9 @@ Return ONLY a valid JSON object:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Heuristic fallback
     return {
@@ -430,11 +476,9 @@ Return ONLY valid JSON:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Fallback
     return {
@@ -488,11 +532,9 @@ Return ONLY valid JSON:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Fallback
     full = f"""Dear Hiring Manager at {company},
@@ -551,11 +593,9 @@ Evaluate the candidate's answer carefully. Return ONLY valid JSON:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Fallback
     word_count = len(answer.split())
@@ -758,7 +798,7 @@ CRITICAL RULES FOR MINIMAL & DIRECT RESPONSES:
 5. FORMATTING:
    - Use clean Markdown with bold bullet points. NEVER use ASCII or pipe tables (| Column |).
 """
-        max_tokens = 1024
+        max_tokens = 700
         temperature = 0.2
     else:
         system_prompt = f"""You are the AI Career Companion Agent on the TalentSprint AI platform.
@@ -773,7 +813,7 @@ GUIDELINES:
 4. Ground your answers strictly in the candidate's extracted resume and projects.
 5. Format in clean Markdown with bold bullet points. NEVER use ASCII or pipe tables.
 """
-        max_tokens = 2048
+        max_tokens = 750
         temperature = 0.3
 
     groq_msgs = [{"role": "system", "content": system_prompt}]
@@ -785,7 +825,7 @@ GUIDELINES:
         content = _call_groq(groq_msgs, json_mode=False, temperature=temperature, max_tokens=max_tokens)
 
     if content:
-        return _sanitize_text_response(content)
+        return _sanitize_unicode(_sanitize_text_response(content))
 
     # Resilient fallback
     return "Hello! Ask me any question about your resume, target roles, or interview preparation. I will provide a direct, concise answer."
@@ -854,11 +894,9 @@ Return ONLY a valid JSON object matching this schema:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Heuristic fallback
     skill_list = list(tech_skills or ["Python", "React", "SQL", "Git", "FastAPI"])
@@ -1000,11 +1038,9 @@ Return ONLY valid JSON matching this exact schema:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Heuristic fallback for interview prep
     return {
@@ -1149,11 +1185,9 @@ Return ONLY valid JSON matching this schema:
         {"role": "user", "content": prompt}
     ], json_mode=True)
 
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
 
     # Intelligent heuristic fallback
     lines = [l.strip() for l in clean_text.splitlines() if l.strip()]
@@ -1202,11 +1236,9 @@ Return JSON:
         {"role": "system", "content": "You are a code reviewer. Return valid JSON only."},
         {"role": "user", "content": prompt}
     ], json_mode=True)
-    if raw_content:
-        try:
-            return json.loads(raw_content)
-        except Exception:
-            pass
+    parsed = _clean_and_parse_json(raw_content)
+    if parsed:
+        return parsed
     return {
         "score": 82,
         "feedback": "Code is functionally sound and formatted properly.",

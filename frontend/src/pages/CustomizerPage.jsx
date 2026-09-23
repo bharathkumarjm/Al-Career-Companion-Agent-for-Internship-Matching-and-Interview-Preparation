@@ -7,8 +7,26 @@ export default function CustomizerPage() {
   const [searchParams] = useSearchParams();
   const defaultCompany = searchParams.get("company") || "TechCorp Innovations";
   const defaultRole = searchParams.get("role") || "Backend Developer Intern";
+  const initialTab = searchParams.get("tab") || (searchParams.get("company") ? "cover_letter" : "resume");
 
-  const [activeTab, setActiveTab] = useState("resume"); // "resume", "cover_letter", "cv_generator"
+  const [activeTab, setActiveTab] = useState(initialTab); // "resume", "cover_letter", "cv_generator"
+
+  // Sync state when URL query params change
+  useEffect(() => {
+    const qCompany = searchParams.get("company");
+    const qRole = searchParams.get("role");
+    const qTab = searchParams.get("tab");
+    if (qCompany) setCompany(qCompany);
+    if (qRole) {
+      setRole(qRole);
+      setTargetRole(qRole);
+    }
+    if (qTab) {
+      setActiveTab(qTab);
+    } else if (qCompany) {
+      setActiveTab("cover_letter");
+    }
+  }, [searchParams]);
 
   // Resume Tailor states
   const [targetRole, setTargetRole] = useState(defaultRole);

@@ -316,7 +316,7 @@ export default function JobMatchingPage() {
               {/* Actions Row */}
               <div className="match-card-actions">
                 <Link
-                  to={`/customizer?company=${encodeURIComponent(match.company)}&role=${encodeURIComponent(match.title)}`}
+                  to={`/customizer?company=${encodeURIComponent(match.company)}&role=${encodeURIComponent(match.title)}&tab=cover_letter`}
                   className="btn-sm btn-outline"
                 >
                   ✍️ Tailor Cover Letter

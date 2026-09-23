@@ -391,7 +391,7 @@ export default function KnowledgeBasePage() {
 
                 <div className="job-card-actions">
                   <Link
-                    to={`/customizer?company=${encodeURIComponent(job.company)}&role=${encodeURIComponent(job.title)}`}
+                    to={`/customizer?company=${encodeURIComponent(job.company)}&role=${encodeURIComponent(job.title)}&tab=cover_letter`}
                     className="btn-sm btn-outline"
                   >
                     ✍️ Tailor Cover Letter
