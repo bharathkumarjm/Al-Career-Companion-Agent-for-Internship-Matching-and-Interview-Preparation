@@ -301,11 +301,11 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* 9 Core Modules Grid */}
+      {/* 8 Core Modules Grid */}
       <section className="modules-section">
         <div className="section-header">
           <div>
-            <h3>The 9 Core Career Modules</h3>
+            <h3>The 8 Core Career Modules</h3>
             <p>Access every required module with synchronized profile data and AI intelligence</p>
           </div>
         </div>

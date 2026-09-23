@@ -376,7 +376,37 @@ Return ONLY a valid JSON object:
     ], json_mode=True)
 
     parsed = _clean_and_parse_json(raw_content)
-    if parsed:
+    if parsed and isinstance(parsed, dict):
+        if "target_role" not in parsed:
+            parsed["target_role"] = target_role
+        if "match_percentage" not in parsed:
+            parsed["match_percentage"] = 70
+        if "critical_gaps" not in parsed:
+            parsed["critical_gaps"] = ["Cloud Deployment (Docker/AWS)", "System Design Fundamentals"]
+        if "learning_roadmap" not in parsed:
+            parsed["learning_roadmap"] = [
+                {"phase": "Weeks 1-2", "topic": f"Foundations for {target_role}", "action_items": ["Core skills mastery"]},
+                {"phase": "Weeks 3-4", "topic": "Project Delivery", "action_items": ["Build portfolio project"]}
+            ]
+        if "recommended_courses" not in parsed:
+            parsed["recommended_courses"] = [
+                {
+                    "title": f"Complete {target_role} Masterclass",
+                    "platform": "FreeCodeCamp",
+                    "type": "Free",
+                    "url": "https://www.freecodecamp.org",
+                    "description": "Comprehensive practical curriculum."
+                }
+            ]
+        if "recommended_projects" not in parsed:
+            parsed["recommended_projects"] = [
+                {
+                    "title": f"Production-Ready {target_role} Web Application",
+                    "tech_stack": ["FastAPI", "React", "PostgreSQL", "Docker"],
+                    "description": "Architect a full-stack platform featuring JWT authentication, database persistence, and REST endpoints.",
+                    "resume_impact": "Demonstrates full-stack lifecycle competence and clean software architecture."
+                }
+            ]
         return parsed
 
     # Heuristic fallback

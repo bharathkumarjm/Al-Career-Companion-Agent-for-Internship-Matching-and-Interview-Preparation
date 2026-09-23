@@ -683,7 +683,7 @@ export default function CareerAssistantPage() {
 
   return (
     <Layout
-      title="AI Career Companion Agent"
+      title="8. AI Career Companion Agent"
       subtitle="AI-Powered Preparation Agent for Internship Matching and Interview Preparation grounded in your extracted resume data"
     >
       {/* View Switcher Navigation Tabs */}

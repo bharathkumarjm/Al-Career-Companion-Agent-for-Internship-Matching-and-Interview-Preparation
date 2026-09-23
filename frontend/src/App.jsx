@@ -40,7 +40,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 
-        {/* 9 CORE MODULES + DASHBOARD */}
+        {/* 8 CORE MODULES + DASHBOARD */}
         <Route
           path="/dashboard"
           element={

@@ -1147,7 +1147,7 @@
 
 
 /* ============================================================
-   APP SHELL & 9 CORE MODULES COMPREHENSIVE STYLING
+   APP SHELL & 8 CORE MODULES COMPREHENSIVE STYLING
 ============================================================ */
 
 /* App Shell & Sidebar */
@@ -4647,7 +4647,7 @@
   color: #1e293b;
 }
 
-/* Chat Layout (Module 9) */
+/* Chat Layout (Module 8) */
 .chat-layout-wrapper {
   display: flex;
   flex-direction: column;

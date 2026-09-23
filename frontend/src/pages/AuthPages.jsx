@@ -111,7 +111,7 @@ export function LandingPage() {
           <p>
             An integrated AI system covering Student Profile Management, Deep Resume
             Parsing, RAG Knowledge Retrieval, Precision Job Matching, Skill Gap Roadmaps,
-            Customized Resumes & Cover Letters, Mock Interview Practice, and Application Tracking.
+            Customized Resumes & Cover Letters, Mock Interview Practice, and Conversational Career Guidance.
           </p>
 
           <div className="hero-buttons">
@@ -217,7 +217,7 @@ export function LandingPage() {
 
       <section id="modules" className="features-section">
         <div className="features-section-header">
-          <h2>The 9 Core Intelligence Modules</h2>
+          <h2>The 8 Core Intelligence Modules</h2>
           <p>Click any module below to jump directly into the workspace or log in to continue</p>
         </div>
 
